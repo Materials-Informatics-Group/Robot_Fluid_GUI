@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TakahashiGroup_SyringeBotGUI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ea6b93ae8a8bb15fff733f7f38ff39efd86a2b94")]
 [assembly: System.Reflection.AssemblyProductAttribute("TakahashiGroup_SyringeBotGUI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TakahashiGroup_SyringeBotGUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

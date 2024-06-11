@@ -239,11 +239,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Share\\OneDrive\\Documents\\VisualStudio\\TakahashiGroup_SyringeBotGUI\\TakahashiGroup_SyringeBotGUI.csproj",
+      "projectUniqueName": "C:\\Users\\Share\\Documents\\GitHub\\Robot_Fluid_GUI\\TakahashiGroup_SyringeBotGUI.csproj",
       "projectName": "TakahashiGroup_SyringeBotGUI",
-      "projectPath": "C:\\Users\\Share\\OneDrive\\Documents\\VisualStudio\\TakahashiGroup_SyringeBotGUI\\TakahashiGroup_SyringeBotGUI.csproj",
+      "projectPath": "C:\\Users\\Share\\Documents\\GitHub\\Robot_Fluid_GUI\\TakahashiGroup_SyringeBotGUI.csproj",
       "packagesPath": "C:\\Users\\Share\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Share\\OneDrive\\Documents\\VisualStudio\\TakahashiGroup_SyringeBotGUI\\obj\\",
+      "outputPath": "C:\\Users\\Share\\Documents\\GitHub\\Robot_Fluid_GUI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

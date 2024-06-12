@@ -41,11 +41,18 @@
             manualCmdSBMsg = new Label();
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
-            panel6 = new Panel();
+            macroManagerPanel = new Panel();
+            recordMacroBtn = new Button();
+            saveMacroBtn = new Button();
+            label1 = new Label();
             currLoadedMacro = new RichTextBox();
             loadMacroBtn = new Button();
             sendMacroBtn = new Button();
             SyringeGB = new GroupBox();
+            calibS4TubesBtn = new Button();
+            calibS3TubesBtn = new Button();
+            calibS2TubesBtn = new Button();
+            calibS1TubesBtn = new Button();
             InitS4Btn = new Button();
             InitS3Btn = new Button();
             InitS2Btn = new Button();
@@ -125,6 +132,12 @@
             label29 = new Label();
             tabPage2 = new TabPage();
             manualCmdGB = new GroupBox();
+            label6 = new Label();
+            panel1 = new Panel();
+            observedVolume = new NumericUpDown();
+            calibrateForSetPosBtn = new Button();
+            label3 = new Label();
+            label4 = new Label();
             manualStopBtn = new Button();
             label2 = new Label();
             panel9 = new Panel();
@@ -148,12 +161,13 @@
             panel5 = new Panel();
             panel3 = new Panel();
             tgLogo = new PictureBox();
+            panel2 = new Panel();
             ((System.ComponentModel.ISupportInitialize)huLogo).BeginInit();
             ((System.ComponentModel.ISupportInitialize)appTitle).BeginInit();
             panel4.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
-            panel6.SuspendLayout();
+            macroManagerPanel.SuspendLayout();
             SyringeGB.SuspendLayout();
             infoPanel.SuspendLayout();
             Sy4Panel.SuspendLayout();
@@ -174,12 +188,15 @@
             ((System.ComponentModel.ISupportInitialize)Sy1CurrValTrackBar).BeginInit();
             tabPage2.SuspendLayout();
             manualCmdGB.SuspendLayout();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)observedVolume).BeginInit();
             panel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numAngles).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numTurns).BeginInit();
             panel5.SuspendLayout();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)tgLogo).BeginInit();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // huLogo
@@ -274,49 +291,84 @@
             // 
             tabControl1.Controls.Add(tabPage1);
             tabControl1.Controls.Add(tabPage2);
-            tabControl1.Location = new Point(8, 263);
+            tabControl1.Location = new Point(4, 257);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1454, 707);
+            tabControl1.Size = new Size(1454, 775);
             tabControl1.TabIndex = 26;
             // 
             // tabPage1
             // 
-            tabPage1.Controls.Add(panel6);
+            tabPage1.Controls.Add(macroManagerPanel);
             tabPage1.Controls.Add(SyringeGB);
             tabPage1.Location = new Point(4, 34);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1446, 669);
+            tabPage1.Size = new Size(1446, 737);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Syringe Controls";
             tabPage1.UseVisualStyleBackColor = true;
             // 
-            // panel6
+            // macroManagerPanel
             // 
-            panel6.BackColor = Color.MistyRose;
-            panel6.Controls.Add(currLoadedMacro);
-            panel6.Controls.Add(loadMacroBtn);
-            panel6.Controls.Add(sendMacroBtn);
-            panel6.Location = new Point(1128, 23);
-            panel6.Name = "panel6";
-            panel6.Size = new Size(290, 485);
-            panel6.TabIndex = 1;
+            macroManagerPanel.BackColor = Color.MistyRose;
+            macroManagerPanel.Controls.Add(recordMacroBtn);
+            macroManagerPanel.Controls.Add(saveMacroBtn);
+            macroManagerPanel.Controls.Add(label1);
+            macroManagerPanel.Controls.Add(currLoadedMacro);
+            macroManagerPanel.Controls.Add(loadMacroBtn);
+            macroManagerPanel.Controls.Add(sendMacroBtn);
+            macroManagerPanel.Enabled = false;
+            macroManagerPanel.Location = new Point(1114, 19);
+            macroManagerPanel.Name = "macroManagerPanel";
+            macroManagerPanel.Size = new Size(290, 585);
+            macroManagerPanel.TabIndex = 1;
+            // 
+            // recordMacroBtn
+            // 
+            recordMacroBtn.Location = new Point(21, 35);
+            recordMacroBtn.Name = "recordMacroBtn";
+            recordMacroBtn.Size = new Size(124, 85);
+            recordMacroBtn.TabIndex = 5;
+            recordMacroBtn.Text = "START RECORD MACRO";
+            toolTip1.SetToolTip(recordMacroBtn, "Only Available when all syringes are at max position");
+            recordMacroBtn.UseVisualStyleBackColor = true;
+            recordMacroBtn.Click += recordMacroBtn_Click;
+            // 
+            // saveMacroBtn
+            // 
+            saveMacroBtn.Location = new Point(159, 493);
+            saveMacroBtn.Name = "saveMacroBtn";
+            saveMacroBtn.Size = new Size(112, 74);
+            saveMacroBtn.TabIndex = 4;
+            saveMacroBtn.Text = "SAVE MACRO";
+            saveMacroBtn.UseVisualStyleBackColor = true;
+            saveMacroBtn.Click += saveMacroBtn_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label1.Location = new Point(54, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(196, 32);
+            label1.TabIndex = 3;
+            label1.Text = "Macro Manager";
             // 
             // currLoadedMacro
             // 
             currLoadedMacro.Enabled = false;
-            currLoadedMacro.Location = new Point(21, 94);
+            currLoadedMacro.Location = new Point(21, 129);
             currLoadedMacro.Name = "currLoadedMacro";
-            currLoadedMacro.Size = new Size(250, 170);
+            currLoadedMacro.Size = new Size(250, 352);
             currLoadedMacro.TabIndex = 2;
             currLoadedMacro.Text = "";
             // 
             // loadMacroBtn
             // 
-            loadMacroBtn.Location = new Point(21, 10);
+            loadMacroBtn.Location = new Point(159, 35);
             loadMacroBtn.Name = "loadMacroBtn";
-            loadMacroBtn.Size = new Size(112, 72);
+            loadMacroBtn.Size = new Size(112, 85);
             loadMacroBtn.TabIndex = 1;
             loadMacroBtn.Text = "LOAD MACRO";
             loadMacroBtn.UseVisualStyleBackColor = true;
@@ -324,7 +376,7 @@
             // 
             // sendMacroBtn
             // 
-            sendMacroBtn.Location = new Point(21, 391);
+            sendMacroBtn.Location = new Point(21, 493);
             sendMacroBtn.Name = "sendMacroBtn";
             sendMacroBtn.Size = new Size(112, 74);
             sendMacroBtn.TabIndex = 0;
@@ -334,6 +386,10 @@
             // 
             // SyringeGB
             // 
+            SyringeGB.Controls.Add(calibS4TubesBtn);
+            SyringeGB.Controls.Add(calibS3TubesBtn);
+            SyringeGB.Controls.Add(calibS2TubesBtn);
+            SyringeGB.Controls.Add(calibS1TubesBtn);
             SyringeGB.Controls.Add(InitS4Btn);
             SyringeGB.Controls.Add(InitS3Btn);
             SyringeGB.Controls.Add(InitS2Btn);
@@ -354,10 +410,54 @@
             SyringeGB.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             SyringeGB.Location = new Point(10, 6);
             SyringeGB.Name = "SyringeGB";
-            SyringeGB.Size = new Size(1098, 655);
+            SyringeGB.Size = new Size(1087, 725);
             SyringeGB.TabIndex = 0;
             SyringeGB.TabStop = false;
             SyringeGB.Text = "Syringes";
+            // 
+            // calibS4TubesBtn
+            // 
+            calibS4TubesBtn.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            calibS4TubesBtn.Location = new Point(817, 183);
+            calibS4TubesBtn.Name = "calibS4TubesBtn";
+            calibS4TubesBtn.Size = new Size(263, 41);
+            calibS4TubesBtn.TabIndex = 55;
+            calibS4TubesBtn.Text = "Calibrate Syringe 4 Tubes";
+            calibS4TubesBtn.UseVisualStyleBackColor = true;
+            calibS4TubesBtn.Click += calibS4TubesBtn_Click;
+            // 
+            // calibS3TubesBtn
+            // 
+            calibS3TubesBtn.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            calibS3TubesBtn.Location = new Point(543, 183);
+            calibS3TubesBtn.Name = "calibS3TubesBtn";
+            calibS3TubesBtn.Size = new Size(263, 41);
+            calibS3TubesBtn.TabIndex = 54;
+            calibS3TubesBtn.Text = "Calibrate Syringe 3 Tubes";
+            calibS3TubesBtn.UseVisualStyleBackColor = true;
+            calibS3TubesBtn.Click += calibS3TubesBtn_Click;
+            // 
+            // calibS2TubesBtn
+            // 
+            calibS2TubesBtn.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            calibS2TubesBtn.Location = new Point(275, 183);
+            calibS2TubesBtn.Name = "calibS2TubesBtn";
+            calibS2TubesBtn.Size = new Size(263, 41);
+            calibS2TubesBtn.TabIndex = 53;
+            calibS2TubesBtn.Text = "Calibrate Syringe 2 Tubes";
+            calibS2TubesBtn.UseVisualStyleBackColor = true;
+            calibS2TubesBtn.Click += calibS2TubesBtn_Click;
+            // 
+            // calibS1TubesBtn
+            // 
+            calibS1TubesBtn.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            calibS1TubesBtn.Location = new Point(6, 183);
+            calibS1TubesBtn.Name = "calibS1TubesBtn";
+            calibS1TubesBtn.Size = new Size(263, 41);
+            calibS1TubesBtn.TabIndex = 52;
+            calibS1TubesBtn.Text = "Calibrate Syringe 1 Tubes";
+            calibS1TubesBtn.UseVisualStyleBackColor = true;
+            calibS1TubesBtn.Click += calibS1TubesBtn_Click;
             // 
             // InitS4Btn
             // 
@@ -471,7 +571,7 @@
             Sy4Panel.Controls.Add(label28);
             Sy4Panel.Controls.Add(Sy4CurrValTrackBar);
             Sy4Panel.Enabled = false;
-            Sy4Panel.Location = new Point(817, 183);
+            Sy4Panel.Location = new Point(817, 230);
             Sy4Panel.Name = "Sy4Panel";
             Sy4Panel.Size = new Size(263, 459);
             Sy4Panel.TabIndex = 44;
@@ -656,7 +756,7 @@
             Sy3Panel.Controls.Add(label21);
             Sy3Panel.Controls.Add(Sy3CurrValTrackBar);
             Sy3Panel.Enabled = false;
-            Sy3Panel.Location = new Point(548, 183);
+            Sy3Panel.Location = new Point(544, 230);
             Sy3Panel.Name = "Sy3Panel";
             Sy3Panel.Size = new Size(263, 459);
             Sy3Panel.TabIndex = 43;
@@ -841,7 +941,7 @@
             Sy2Panel.Controls.Add(Sy2ActivatePumpBtn);
             Sy2Panel.Controls.Add(Sy2CurrValTrackBar);
             Sy2Panel.Enabled = false;
-            Sy2Panel.Location = new Point(274, 183);
+            Sy2Panel.Location = new Point(275, 230);
             Sy2Panel.Name = "Sy2Panel";
             Sy2Panel.Size = new Size(263, 459);
             Sy2Panel.TabIndex = 42;
@@ -1030,7 +1130,7 @@
             Sy1Panel.Controls.Add(Sy1ActivatePumpBtn);
             Sy1Panel.Controls.Add(Sy1CurrValTrackBar);
             Sy1Panel.Enabled = false;
-            Sy1Panel.Location = new Point(6, 183);
+            Sy1Panel.Location = new Point(6, 230);
             Sy1Panel.Name = "Sy1Panel";
             Sy1Panel.Size = new Size(263, 459);
             Sy1Panel.TabIndex = 2;
@@ -1246,13 +1346,15 @@
             tabPage2.Location = new Point(4, 34);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1446, 669);
+            tabPage2.Size = new Size(1446, 737);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Manual Controls";
             tabPage2.UseVisualStyleBackColor = true;
             // 
             // manualCmdGB
             // 
+            manualCmdGB.Controls.Add(label6);
+            manualCmdGB.Controls.Add(panel1);
             manualCmdGB.Controls.Add(manualStopBtn);
             manualCmdGB.Controls.Add(label2);
             manualCmdGB.Controls.Add(panel9);
@@ -1276,16 +1378,76 @@
             manualCmdGB.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             manualCmdGB.Location = new Point(6, 6);
             manualCmdGB.Name = "manualCmdGB";
-            manualCmdGB.Size = new Size(1234, 296);
+            manualCmdGB.Size = new Size(1234, 386);
             manualCmdGB.TabIndex = 30;
             manualCmdGB.TabStop = false;
             manualCmdGB.Text = "Manual Commands";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            label6.Location = new Point(691, 47);
+            label6.Name = "label6";
+            label6.Size = new Size(324, 21);
+            label6.TabIndex = 53;
+            label6.Text = "Calibrate current position to observed ml";
+            // 
+            // panel1
+            // 
+            panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(observedVolume);
+            panel1.Controls.Add(calibrateForSetPosBtn);
+            panel1.Controls.Add(label3);
+            panel1.Controls.Add(label4);
+            panel1.Location = new Point(687, 60);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(377, 71);
+            panel1.TabIndex = 52;
+            // 
+            // observedVolume
+            // 
+            observedVolume.Font = new Font("Segoe UI", 10F);
+            observedVolume.Increment = new decimal(new int[] { 5, 0, 0, 65536 });
+            observedVolume.Location = new Point(36, 19);
+            observedVolume.Name = "observedVolume";
+            observedVolume.Size = new Size(80, 34);
+            observedVolume.TabIndex = 49;
+            // 
+            // calibrateForSetPosBtn
+            // 
+            calibrateForSetPosBtn.BackColor = Color.FromArgb(192, 255, 192);
+            calibrateForSetPosBtn.Location = new Point(201, 17);
+            calibrateForSetPosBtn.Name = "calibrateForSetPosBtn";
+            calibrateForSetPosBtn.Size = new Size(126, 39);
+            calibrateForSetPosBtn.TabIndex = 51;
+            calibrateForSetPosBtn.Text = "Calibrate";
+            calibrateForSetPosBtn.UseVisualStyleBackColor = false;
+            calibrateForSetPosBtn.Click += calibrateForSetPosBtn_Click;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(11, 17);
+            label3.Name = "label3";
+            label3.Size = new Size(29, 30);
+            label3.TabIndex = 48;
+            label3.Text = "=";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(122, 23);
+            label4.Name = "label4";
+            label4.Size = new Size(39, 30);
+            label4.TabIndex = 50;
+            label4.Text = "ml";
             // 
             // manualStopBtn
             // 
             manualStopBtn.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
             manualStopBtn.ForeColor = Color.Red;
-            manualStopBtn.Location = new Point(692, 208);
+            manualStopBtn.Location = new Point(657, 244);
             manualStopBtn.Name = "manualStopBtn";
             manualStopBtn.Size = new Size(236, 82);
             manualStopBtn.TabIndex = 7;
@@ -1297,7 +1459,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            label2.Location = new Point(695, 57);
+            label2.Location = new Point(7, 228);
             label2.Name = "label2";
             label2.Size = new Size(290, 28);
             label2.TabIndex = 31;
@@ -1306,9 +1468,9 @@
             // panel9
             // 
             panel9.Controls.Add(manualCmdSBMsg);
-            panel9.Location = new Point(692, 73);
+            panel9.Location = new Point(4, 244);
             panel9.Name = "panel9";
-            panel9.Size = new Size(517, 73);
+            panel9.Size = new Size(642, 82);
             panel9.TabIndex = 31;
             // 
             // numAngles
@@ -1480,7 +1642,7 @@
             panel5.Controls.Add(availableCOMPorts);
             panel5.Controls.Add(appTitle);
             panel5.Controls.Add(connStatus);
-            panel5.Location = new Point(12, 9);
+            panel5.Location = new Point(4, 3);
             panel5.Name = "panel5";
             panel5.Size = new Size(1150, 248);
             panel5.TabIndex = 27;
@@ -1504,14 +1666,24 @@
             tgLogo.TabIndex = 2;
             tgLogo.TabStop = false;
             // 
+            // panel2
+            // 
+            panel2.AutoScroll = true;
+            panel2.Controls.Add(panel5);
+            panel2.Controls.Add(tabControl1);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(0, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1473, 1050);
+            panel2.TabIndex = 28;
+            // 
             // SBGUIMainForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Info;
-            ClientSize = new Size(1514, 1050);
-            Controls.Add(panel5);
-            Controls.Add(tabControl1);
+            ClientSize = new Size(1473, 1050);
+            Controls.Add(panel2);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "SBGUIMainForm";
             Text = "Takahashi Group Syringe-Bot Controller Application";
@@ -1521,7 +1693,8 @@
             panel4.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
-            panel6.ResumeLayout(false);
+            macroManagerPanel.ResumeLayout(false);
+            macroManagerPanel.PerformLayout();
             SyringeGB.ResumeLayout(false);
             SyringeGB.PerformLayout();
             infoPanel.ResumeLayout(false);
@@ -1549,6 +1722,9 @@
             tabPage2.ResumeLayout(false);
             manualCmdGB.ResumeLayout(false);
             manualCmdGB.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)observedVolume).EndInit();
             panel9.ResumeLayout(false);
             panel9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numAngles).EndInit();
@@ -1557,6 +1733,7 @@
             panel5.PerformLayout();
             panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)tgLogo).EndInit();
+            panel2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -1668,7 +1845,7 @@
         private Panel panel5;
         private Panel panel3;
         private PictureBox tgLogo;
-        private Panel panel6;
+        private Panel macroManagerPanel;
         private Button sendMacroBtn;
         private Button loadMacroBtn;
         private RichTextBox currLoadedMacro;
@@ -1680,5 +1857,19 @@
         private Button InitS3Btn;
         private Button InitS2Btn;
         private Button InitS1Btn;
+        private Label label1;
+        private Button recordMacroBtn;
+        private Button saveMacroBtn;
+        private Button calibrateForSetPosBtn;
+        private Label label4;
+        private NumericUpDown observedVolume;
+        private Label label3;
+        private Label label6;
+        private Panel panel1;
+        private Button calibS4TubesBtn;
+        private Button calibS3TubesBtn;
+        private Button calibS2TubesBtn;
+        private Button calibS1TubesBtn;
+        private Panel panel2;
     }
 }

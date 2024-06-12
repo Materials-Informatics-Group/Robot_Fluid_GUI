@@ -3,7 +3,9 @@ namespace TakahashiGroup_SyringeBotGUI
     using Microsoft.VisualBasic;
     using Microsoft.VisualBasic.Logging;
     using System.IO.Ports;
+    using System.Windows.Forms;
     using System.Xml.Linq;
+    using static System.Windows.Forms.LinkLabel;
 
     /// <summary>
     /// SBGUIMainForm Class Definition
@@ -28,7 +30,11 @@ namespace TakahashiGroup_SyringeBotGUI
         int isResetting = -1;
         int isInit = -1;
         int[] syPumpTargetVals = Enumerable.Repeat(0, NO_OF_SYRINGES).ToArray();
+
+        bool macroIsRecording = false;
         List<string> currentMacro = new List<string>();
+        int macroPointer = -1;
+
 
         /// <summary>
         /// Main Form Constructor
@@ -98,19 +104,19 @@ namespace TakahashiGroup_SyringeBotGUI
                     serialPort1.Open();
                     connectBtn.Enabled = false;
                     availableCOMPorts.Enabled = false;
-                    serialPort1.Write("A77");
+                    sendCmdToBot("A77");
                     timer1.Start();
                 }
             }
             else if (isConnected == (int)connStates.disconnected)
             {
                 connectBtn.Enabled = false;
-                serialPort1.Write("C77");
+                sendCmdToBot("C77");
             }
             else if (isConnected == (int)connStates.connected)
             {
                 connectBtn.Enabled = false;
-                serialPort1.Write("D77");
+                sendCmdToBot("D77");
             }
         }
 
@@ -125,6 +131,20 @@ namespace TakahashiGroup_SyringeBotGUI
             string indata = serialPort1.ReadLine();
             d1 writeit = new d1(Write2Form);
             BeginInvoke(writeit, indata);
+        }
+
+        /// <summary>
+        /// Sends the command to the serial port
+        /// </summary>
+        /// <param name="cmd"></param>
+        private void sendCmdToBot(string cmd)
+        {
+            if (macroIsRecording)
+            {
+                currentMacro.Add(cmd);
+                currLoadedMacro.Text += cmd + "\r\n";
+            }
+            serialPort1.Write(cmd);
         }
 
 
@@ -142,7 +162,7 @@ namespace TakahashiGroup_SyringeBotGUI
             return vst;
         }
 
-        
+
         /// <summary>
         /// This function handles what to do when reset has been finished by SB
         /// </summary>
@@ -259,7 +279,7 @@ namespace TakahashiGroup_SyringeBotGUI
         {
             string msg = "";
             if (whatSyringe == -1) { msg = "Emergency Stop!"; }
-            else { msg = "Syringe " + (whatSyringe+1).ToString() + " manually dislocated."; }
+            else { msg = "Syringe " + (whatSyringe + 1).ToString() + " manually dislocated."; }
 
             if (whatSyringe == 0 || whatSyringe == -1)
             {
@@ -308,7 +328,7 @@ namespace TakahashiGroup_SyringeBotGUI
                 Sy4StateInfo.Text = "Init or Reset Required";
                 Sy4Panel.Enabled = false;
             }
-            
+
             resetBtn.BackColor = Color.FromArgb(128, 255, 128);
             return msg;
         }
@@ -385,7 +405,7 @@ namespace TakahashiGroup_SyringeBotGUI
                     double mlToSpin = diffMLVal * currSpinPerMl;
                     string cmd = "P" + syIdx.ToString() + mlToSpin.ToString();
                     SBInfo.Text = "Sy-" + syIdx.ToString() + " Pump Cmd Sent...";
-                    serialPort1.Write(cmd);
+                    sendCmdToBot(cmd);
                 }
 
                 if (syIdx == 0) { Sy1StateInfo.ForeColor = Color.Lime; Sy1StateInfo.Text = "Ready!"; }
@@ -440,7 +460,7 @@ namespace TakahashiGroup_SyringeBotGUI
                 if (newAngle > 170) { newAngle = 170; }
                 string cmd = "V" + syIdx.ToString() + valveId.ToString() + newAngle.ToString();
                 SBInfo.Text = "Sy-" + syIdx.ToString() + " Valve-" + valveId.ToString() + " Cmd Sent...";
-                serialPort1.Write(cmd);
+                sendCmdToBot(cmd);
 
                 if (syIdx == 0) { Sy1StateInfo.ForeColor = Color.Lime; Sy1StateInfo.Text = "Ready!"; }
                 else if (syIdx == 1) { Sy2StateInfo.ForeColor = Color.Lime; Sy2StateInfo.Text = "Ready!"; }
@@ -456,7 +476,7 @@ namespace TakahashiGroup_SyringeBotGUI
         {
             string cmd = "I" + syIdx.ToString();
             SBInfo.Text = "Sy-" + syIdx.ToString() + " Init Cmd Sent...";
-            serialPort1.Write(cmd);
+            sendCmdToBot(cmd);
         }
 
 
@@ -535,6 +555,21 @@ namespace TakahashiGroup_SyringeBotGUI
                 {
                     System.Diagnostics.Debug.WriteLine(msg);
                 }
+
+                if (macroPointer >= 0)
+                {
+                    macroPointer++;
+                    if (macroPointer < currentMacro.Count)
+                    {
+                        Thread.Sleep(10);
+                        sendCmdToBot(currentMacro[macroPointer]);
+                    }
+                    else
+                    {
+                        macroPointer = -1;
+                    }
+                }
+
             }
 
             // B Messages are all about connection related issues
@@ -565,6 +600,7 @@ namespace TakahashiGroup_SyringeBotGUI
                     connectBtn.Enabled = true;
                     manualCmdGB.Enabled = true;
                     SyringeGB.Enabled = true;
+                    macroManagerPanel.Enabled = true;
                 }
                 else
                 {
@@ -575,6 +611,7 @@ namespace TakahashiGroup_SyringeBotGUI
                     connectBtn.Enabled = true;
                     manualCmdGB.Enabled = false;
                     SyringeGB.Enabled = false;
+                    macroManagerPanel.Enabled = false;
                 }
             }
         }
@@ -609,7 +646,7 @@ namespace TakahashiGroup_SyringeBotGUI
                 string theDir = (dirSelect.SelectedIndex == 0) ? "" : "-";
                 string cmd = "P" + syringeSelect1.SelectedIndex.ToString() + theDir + numTurns.Value.ToString();
                 manualCmdSBMsg.Text = "Sent Pump and Waiting... (" + cmd + ")";
-                serialPort1.Write(cmd);
+                sendCmdToBot(cmd);
             }
         }
 
@@ -626,7 +663,7 @@ namespace TakahashiGroup_SyringeBotGUI
                 emergencyStopped(syringeSelect2.SelectedIndex);
                 string cmd = "V" + syringeSelect2.SelectedIndex.ToString() + (valveSelect.SelectedIndex + 1).ToString() + numAngles.Value.ToString();
                 manualCmdSBMsg.Text = "Sent Valve and Waiting... (" + cmd + ")";
-                serialPort1.Write(cmd);
+                sendCmdToBot(cmd);
             }
         }
 
@@ -638,7 +675,7 @@ namespace TakahashiGroup_SyringeBotGUI
         /// <param name="e"></param>
         private void manualStopBtn_Click(object sender, EventArgs e)
         {
-            serialPort1.Write("S");
+            sendCmdToBot("S");
         }
 
 
@@ -659,7 +696,7 @@ namespace TakahashiGroup_SyringeBotGUI
             Sy4V1ReqStateCB.SelectedIndex = 0;
             Sy4V2ReqStateCB.SelectedIndex = 0;
             resetBtn.Enabled = false;
-            serialPort1.Write("R");
+            sendCmdToBot("R");
         }
 
 
@@ -670,7 +707,7 @@ namespace TakahashiGroup_SyringeBotGUI
         /// <param name="e"></param>
         private void stopBtn_Click(object sender, EventArgs e)
         {
-            serialPort1.Write("S");
+            sendCmdToBot("S");
         }
 
 
@@ -835,31 +872,61 @@ namespace TakahashiGroup_SyringeBotGUI
 
         private void loadMacroBtn_Click(object sender, EventArgs e)
         {
-            currentMacro.Add("V0145");
-            currentMacro.Add("V0290");
-            currentMacro.Add("P03");
-            currentMacro.Add("V01170");
-
-            currLoadedMacro.Text = "";
-            foreach (string str in currentMacro)
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                currLoadedMacro.Text += str + "\r\n";
-                //System.Diagnostics.Debug.WriteLine(str);
+                openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        // Get the full file path selected by the user
+                        string userFilePath = openFileDialog.FileName;
+
+                        // Read all lines from the file
+                        string[] lines = File.ReadAllLines(userFilePath);
+
+                        // Process the lines as needed
+                        // Assuming currentMacro is a List<string>
+                        currentMacro.Clear();
+                        currentMacro.AddRange(lines);
+
+                        // For demonstration, let's output the lines to a list box or other control
+                        currLoadedMacro.Text = "";
+                        foreach (string str in currentMacro)
+                        {
+                            currLoadedMacro.Text += str + "\r\n";
+                            //System.Diagnostics.Debug.WriteLine(str);
+                        }
+
+                        //MessageBox.Show("File loaded successfully.");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error loading file: {ex.Message}");
+                    }
+                }
             }
+
+            
         }
 
         private void sendMacroBtn_Click(object sender, EventArgs e)
         {
-            string text = currLoadedMacro.Text.Trim();
-
-            // Check if there is a macro loaded
-            if (!string.IsNullOrEmpty(text))
+            if (Sy1Panel.Enabled == true && Sy2Panel.Enabled == true && Sy3Panel.Enabled == true && Sy4Panel.Enabled == true)
             {
-                foreach (string m in currentMacro)
+                if (currentMacro.Count > 0)
                 {
-                    serialPort1.Write(m);
-                    Thread.Sleep(10);
+                    macroPointer = 0;
+                    sendCmdToBot(currentMacro[macroPointer]);
                 }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("No macro loaded");
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Bot not properly prepared");
             }
         }
 
@@ -902,5 +969,171 @@ namespace TakahashiGroup_SyringeBotGUI
             Sy4V2ReqStateCB.SelectedIndex = 0;
             execInitSyringeCmd(3);
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void recordMacroBtn_Click(object sender, EventArgs e)
+        {
+            if (!macroIsRecording)
+            {
+                if (Sy1CurrValTrackBar.Value == 60 && Sy2CurrValTrackBar.Value == 60 && Sy3CurrValTrackBar.Value == 10 && Sy4CurrValTrackBar.Value == 10)
+                {
+                    currentMacro.Clear();
+                    currLoadedMacro.Text = "";
+                    macroIsRecording = true;
+                    recordMacroBtn.BackColor = Color.Red;
+                    recordMacroBtn.Text = "STOP MACRO RECORDING";
+                }
+                else
+                {
+                    MessageBox.Show("Macros can only be recorded if all syringes are in start positions of max top");
+                }
+            }
+            else
+            {
+                macroIsRecording = false;
+                recordMacroBtn.BackColor = SystemColors.Control;
+                recordMacroBtn.Text = "START MACRO RECORDING";
+            }
+        }
+
+
+        /// <summary>
+        /// Sets the selected syringe to have the volume ml value applied and let the user interact
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void calibrateForSetPosBtn_Click(object sender, EventArgs e)
+        {
+            int syIdx = syringeSelect1.SelectedIndex;
+            int volume = Convert.ToInt32(Math.Round(observedVolume.Value, 0));
+
+            if (syIdx == 0)
+            {
+                Sy1CurrValTrackBar.Value = volume;
+                Sy1CurrValTxt.Text = volume.ToString() + "ml";
+                Sy1CurrValTrackBar.BackColor = SystemColors.Control;
+                Sy1StateInfo.ForeColor = Color.Lime;
+                Sy1StateInfo.Text = "Ready!";
+                Sy1Panel.Enabled = true;
+            }
+            else if (syIdx == 1)
+            {
+                Sy2CurrValTrackBar.Value = volume;
+                Sy2CurrValTxt.Text = volume.ToString() + "ml";
+                Sy2CurrValTrackBar.BackColor = SystemColors.Control;
+                Sy2StateInfo.ForeColor = Color.Lime;
+                Sy2StateInfo.Text = "Ready!";
+                Sy2Panel.Enabled = true;
+            }
+            else if (syIdx == 2)
+            {
+                Sy3CurrValTrackBar.Value = volume;
+                Sy3CurrValTxt.Text = volume.ToString() + "ml";
+                Sy3CurrValTrackBar.BackColor = SystemColors.Control;
+                Sy3StateInfo.ForeColor = Color.Lime;
+                Sy3StateInfo.Text = "Ready!";
+                Sy3Panel.Enabled = true;
+            }
+            else if (syIdx == 3)
+            {
+                Sy4CurrValTrackBar.Value = volume;
+                Sy4CurrValTxt.Text = volume.ToString() + "ml";
+                Sy4CurrValTrackBar.BackColor = SystemColors.Control;
+                Sy4StateInfo.ForeColor = Color.Lime;
+                Sy4StateInfo.Text = "Ready!";
+                Sy4Panel.Enabled = true;
+            }
+        }
+
+        private void saveMacroBtn_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Get the full file path entered by the user
+                    string userFilePath = saveFileDialog.FileName;
+
+                    // Ensure the file has the desired extension (e.g., ".txt")
+                    string fullFileName = Path.ChangeExtension(userFilePath, ".txt");
+
+                    // Write list content to the file
+                    string[] lines = currentMacro.ToArray();
+                    File.WriteAllLines(fullFileName, lines);
+                }
+            }
+        }
+
+        /// <summary>
+        /// creates a macro for specified syringe to fill the tubes with liquid
+        /// </summary>
+        /// <param name="syIdx"></param>
+        private void prepTubingMacro(int syIdx)
+        {
+            double spinPerMl = SPIN_PER_ML_60;
+            int maxSpin = BIG_SYRINGE_MAX;
+            int fillSpin = 10;
+            if (syIdx > 1) { spinPerMl = SPIN_PER_ML_10; maxSpin = SMALL_SYRINGE_MAX; fillSpin = 6; }
+            currentMacro.Clear();
+            currentMacro.Add("V" + syIdx.ToString() + "190");
+            currentMacro.Add("V" + syIdx.ToString() + "290");
+            double mlToSpin = maxSpin * spinPerMl;
+            currentMacro.Add("P" + syIdx.ToString() + "-" + mlToSpin.ToString());
+            mlToSpin = fillSpin * spinPerMl;
+            currentMacro.Add("P" + syIdx.ToString() + mlToSpin.ToString());
+            currentMacro.Add("V" + syIdx.ToString() + "20");
+            currentMacro.Add("V" + syIdx.ToString() + "1170");
+            currentMacro.Add("P" + syIdx.ToString() + "-" + mlToSpin.ToString());
+        }
+
+        private void calibS1TubesBtn_Click(object sender, EventArgs e)
+        {
+            if(Sy1CurrValTrackBar.Value == 60)
+            {
+                prepTubingMacro(0);
+                macroPointer = 0;
+                sendCmdToBot(currentMacro[macroPointer]);
+            }
+        }
+
+        private void calibS2TubesBtn_Click(object sender, EventArgs e)
+        {
+            if (Sy2CurrValTrackBar.Value == 60)
+            {
+                prepTubingMacro(1);
+                macroPointer = 0;
+                sendCmdToBot(currentMacro[macroPointer]);
+            }
+        }
+
+        private void calibS3TubesBtn_Click(object sender, EventArgs e)
+        {
+            if (Sy3CurrValTrackBar.Value == 10)
+            {
+                prepTubingMacro(2);
+                macroPointer = 0;
+                sendCmdToBot(currentMacro[macroPointer]);
+            }
+        }
+
+        private void calibS4TubesBtn_Click(object sender, EventArgs e)
+        {
+            if (Sy4CurrValTrackBar.Value == 10)
+            {
+                prepTubingMacro(3);
+                macroPointer = 0;
+                sendCmdToBot(currentMacro[macroPointer]);
+            }
+        }
+
+        // System.Diagnostics.Debug.WriteLine("Bot not properly prepared");
+        // MessageBox.Show($"Error saving file: {ex.Message}");
+
     }
 }
